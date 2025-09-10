@@ -4,7 +4,7 @@ lua54 'yes'
 
 author 'Samuel#0008'
 description 'Skills UI for FiveM'
-Version '1.0.2'
+Version '2.0.0'
 
 client_script 'client/*.lua'
 
