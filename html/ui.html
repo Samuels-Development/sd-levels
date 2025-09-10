@@ -7,12 +7,18 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div id="skills-container" style="display: none;">
-        <div class="header-buttons">
-            <button id="close-button" aria-label="Close skills menu">&times;</button>
+    <div class="tablet-frame" id="tablet-frame" style="display: none;">
+        <div class="screen-container">
+            <div id="skills-container">
+                <div class="header-wrapper">
+                    <h2>Levels</h2>
+                    <div class="header-buttons">
+                        <button id="close-button" aria-label="Close skills menu">✕</button>
+                    </div>
+                </div>
+                <div id="skills-grid"></div>
+            </div>
         </div>
-        <h2>Skills</h2>
-        <div id="skills-grid"></div>
     </div>
     <script src="app.js"></script>
 </body>

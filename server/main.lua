@@ -4,6 +4,22 @@ local playerXP = {}
 -- Table to store skills configuration
 local skillsConfig = require('skills')
 
+CreateThread(function()
+    -- Create the players_xp table if it doesn't exist
+    local createTableQuery = [[
+        CREATE TABLE IF NOT EXISTS `players_xp` (
+            `id` INT NOT NULL AUTO_INCREMENT,
+            `identifier` VARCHAR(255) NOT NULL UNIQUE,
+            `xp_data` LONGTEXT NOT NULL,
+            PRIMARY KEY (`id`)
+        );
+    ]]
+    
+    -- Execute the query
+    MySQL.Async.execute(createTableQuery, {}, function(rowsChanged)
+        print("^2[SKILLS]^7 Database table 'players_xp' checked/created successfully")
+    end)
+end)
 
 -- Retrieves the player's current XP in a skill.
 ---@param playerId The player's server ID.

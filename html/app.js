@@ -12,16 +12,22 @@ function renderSkills() {
     skillsData.forEach(skill => {
         const skillItem = document.createElement('div');
         skillItem.className = 'skill-item';
+        
+        const progressPercent = skill.progress || (skill.xp % 100);
+        
         skillItem.innerHTML = `
             <div class="skill-header">
                 <span class="skill-name">${skill.name}</span>
                 <div class="skill-info">
                     <span class="skill-xp">XP: ${skill.xp}</span>
-                    <span class="skill-level">Level: ${skill.level}</span>
+                    <span class="skill-level">Level ${skill.level}</span>
                 </div>
             </div>
+            <div class="skill-description">${skill.description || 'No description available'}</div>
             <div class="skill-progress">
-                <div class="skill-progress-bar" style="width: ${skill.progress}%"></div>
+                <div class="skill-progress-bar" style="width: ${progressPercent}%">
+                    <span class="progress-text">${Math.round(progressPercent)}%</span>
+                </div>
             </div>
         `;
         skillsGrid.appendChild(skillItem);
@@ -30,26 +36,30 @@ function renderSkills() {
 
 function toggleUI(show) {
     const body = document.body;
-    const container = document.getElementById('skills-container');
+    const tabletFrame = document.getElementById('tablet-frame');
     
     if (show) {
         body.classList.add('active');
-        container.style.display = 'block';
+        tabletFrame.style.display = 'flex';
+        // Small delay to ensure smooth transition
+        setTimeout(() => {
+            tabletFrame.style.opacity = '1';
+        }, 10);
     } else {
-        body.classList.remove('active');
-        container.style.display = 'none';
+        tabletFrame.style.opacity = '0';
+        setTimeout(() => {
+            body.classList.remove('active');
+            tabletFrame.style.display = 'none';
+        }, 300);
     }
 }
 
 function closeUI() {
     toggleUI(false);
-    fetch('https://sd_skills/closeUI', {method: 'POST'});
+    fetch('https://immense-skills/closeUI', {method: 'POST'});
 }
 
-function refreshSkills() {
-    fetch('https://sd_skills/refreshSkills', {method: 'POST'});
-}
-
+// Event Listeners
 window.addEventListener('message', (event) => {
     if (event.data.action === 'updateSkills') {
         updateSkills(event.data.skills);
@@ -61,9 +71,11 @@ window.addEventListener('message', (event) => {
 document.getElementById('close-button').addEventListener('click', closeUI);
 
 document.addEventListener('keydown', (event) => {
-    if (event.key === 'Escape') {
+    if (event.key === 'Escape' || event.key === 'Backspace') {
+        event.preventDefault();
         closeUI();
     }
 });
 
+// Initialize with empty skills if needed
 renderSkills();
