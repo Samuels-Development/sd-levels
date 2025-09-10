@@ -72,7 +72,7 @@ exports("GetPlayerLevelAndProgress", GetPlayerLevelAndProgress)
 local SendSkillsDataToClient = function(playerId)
     local skillsData = {}
     
-    for skillName, _ in pairs(skillsConfig) do
+    for skillName, skillConfig in pairs(skillsConfig) do
         local xpAmount = GetPlayerXP(playerId, skillName)
         local levelData = GetPlayerLevelAndProgress(playerId, skillName)
         
@@ -82,7 +82,7 @@ local SendSkillsDataToClient = function(playerId)
             level = levelData.level,
             progress = levelData.progress,
             description = skillConfig.description or nil,
-            maxLevel = skillConfig.xpPerLevel and #skillConfig.xpPerLevel or 10,
+            maxLevel = skillConfig.xpPerLevel and #skillConfig.xpPerLevel + 1 or 10,
         }
     end
     
