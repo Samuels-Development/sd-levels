@@ -80,7 +80,9 @@ local SendSkillsDataToClient = function(playerId)
             name = skillName,
             xp = xpAmount,
             level = levelData.level,
-            progress = levelData.progress
+            progress = levelData.progress,
+            description = skillConfig.description or nil,
+            maxLevel = skillConfig.xpPerLevel and #skillConfig.xpPerLevel or 10,
         }
     end
     

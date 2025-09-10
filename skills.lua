@@ -1,5 +1,6 @@
 return { -- table of skills
     ["CHEMISTRY"] = { -- Identifier
+        description = "Mix compounds and create chemical substances",
         -- XP required to progress from the current level to the next level.
         -- Starting level is 1.
         -- The first entry corresponds to the XP needed to go from Level 1 to Level 2.
@@ -27,56 +28,67 @@ return { -- table of skills
         },
     },
     ["COOKING"] = {
+        description = "Prepare meals and master culinary techniques",
         xpPerLevel = {
             100, 150, 200, 250, 300, 350, 400, 450, 500, 550,
         },
     },
     ["CRAFTING"] = {
+        description = "Create items and tools from raw materials",
         xpPerLevel = {
             100, 150, 200, 250, 300, 350, 400, 450, 500, 550,
         },
     },
     ["STAMINA"] = {
+        description = "Increase endurance and physical performance",
         xpPerLevel = {
             100, 150, 200, 250, 300, 350, 400, 450, 500, 550,
         },
     },
     ["HACKING"] = {
+        description = "Bypass security systems and crack codes",
         xpPerLevel = {
             120, 170, 230, 290, 360, 430, 500, 580, 660, 750,
         },
     },
     ["MEDICINE"] = {
+        description = "Treat injuries and administer medical care",
         xpPerLevel = {
             110, 160, 220, 280, 350, 420, 490, 570, 650, 740,
         },
     },
     ["ARCHERY"] = {
+        description = "Master bow techniques and precision shooting",
         xpPerLevel = {
             100, 150, 210, 270, 340, 410, 480, 560, 640, 730,
         },
     },
     ["BLACKSMITHING"] = {
+        description = "Forge weapons and armor from metal",
         xpPerLevel = {
             130, 180, 240, 310, 380, 450, 530, 610, 690, 780,
         },
     },
     ["SURVIVAL"] = {
+        description = "Adapt to harsh environments and find resources",
         xpPerLevel = {
             100, 160, 220, 290, 360, 430, 510, 590, 670, 760,
         },
     },
     ["ENGINEERING"] = {
+        description = "Design and build mechanical contraptions",
         xpPerLevel = {
             120, 170, 230, 300, 370, 450, 530, 620, 710, 800,
         },
     },
     ["ASTRONOMY"] = {
+        description = "Study celestial bodies and navigate by stars",
         xpPerLevel = {
             130, 190, 250, 320, 390, 470, 550, 640, 730, 830,
         },
     },
     ["PHOTOGRAPHY"] = {
+        description = "Capture moments and master camera techniques",
         xpPerLevel = {
             100, 160, 220, 290, 360, 440, 520, 610, 700, 800,
         },

@@ -18,5 +18,6 @@ files {
     'skills.lua',
     'html/ui.html',
     'html/style.css',
-    'html/app.js'
+    'html/app.js',
+    'html/bg.png'
 }
