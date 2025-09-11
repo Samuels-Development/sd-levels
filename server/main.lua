@@ -92,7 +92,7 @@ end
 -- Saves the player's XP data to the database.
 ---@param playerId The player's server ID.
 local SavePlayerXPToDatabase = function(playerId)
-    local identifier = SD.GetIdentifier(playerId)
+    local identifier = GetIdentifier(playerId)
     local serializedXPData = json.encode(playerXP[playerId])
 
     MySQL.Async.execute("UPDATE players_xp SET xp_data = @xp_data WHERE identifier = @identifier", {
@@ -105,7 +105,7 @@ end
 ---@param playerId The player's server ID.
 ---@param callback The callback function to execute after the data is loaded.
 local LoadPlayerXPFromDatabase = function(playerId, callback)
-    local identifier = SD.GetIdentifier(playerId)
+    local identifier = GetIdentifier(playerId)
     MySQL.Async.fetchAll("SELECT xp_data FROM players_xp WHERE identifier = @identifier", {
         ['@identifier'] = identifier
     }, function(result)
@@ -212,4 +212,4 @@ AddEventHandler('playerDropped', function()
     playerXP[playerId] = nil
 end)
 
-SD.CheckVersion('Samuels-Development/sd-levels') -- Check version of specified resource
+CheckVersion('Samuels-Development/sd-levels') -- Check version of specified resource

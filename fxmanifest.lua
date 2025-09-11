@@ -8,9 +8,9 @@ Version '2.0.0'
 
 client_script 'client/*.lua'
 
-server_scripts { '@oxmysql/lib/MySQL.lua', 'server/*.lua' }
+server_scripts { '@oxmysql/lib/MySQL.lua', 'bridge/server.lua', 'server/*.lua' }
 
-shared_scripts { '@sd_lib/init.lua', '@ox_lib/init.lua' }
+shared_scripts { 'bridge/init.lua', '@ox_lib/init.lua' }
 
 ui_page 'html/ui.html'
 
