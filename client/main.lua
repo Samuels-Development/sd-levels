@@ -13,52 +13,78 @@ local UpdateLevelsUI = function(levelsData)
     })
 end
 
--- Function to toggle the visibility of the levels UI.
+--- Function to toggle the visibility of the levels UI.
 ---@param show A boolean indicating whether to show or hide the UI.
 local ToggleLevelsUI = function(show)
     levelsVisible = show
+    if show then
+        TriggerServerEvent('sd_levels:server:syncData')
+        SetNuiFocus(true, true)
+    else
+        SetNuiFocus(false, false)
+    end
     SendNUIMessage({
         action = "toggleUI",
         show = levelsVisible
     })
-    SetNuiFocus(levelsVisible, levelsVisible)
 end
 
--- Event handler for closing the UI
+--- Function to show loading state in UI
+--- @param show boolean Whether to show loading state
+local ShowLoadingState = function(show)
+    SendNUIMessage({
+        action = "setLoading",
+        loading = show
+    })
+end
+
 RegisterNUICallback('closeUI', function(data, cb)
-    ToggleLevelsUI(false)
+    levelsVisible = false
+    SetNuiFocus(false, false)
+    SendNUIMessage({
+        action = "toggleUI",
+        show = false
+    })
     cb('ok')
 end)
 
 -- Event handler for receiving levels data from the server
-RegisterNetEvent('sd-levels:client:updateLevels', function(serverLevels)
+RegisterNetEvent('sd_levels:client:updateLevels', function(serverLevels)
     if serverLevels then
         levels = serverLevels
         UpdateLevelsUI(levels)
     end
 end)
 
+-- Command to open the levels UI
 RegisterCommand("levels", function()
+    ShowLoadingState(true)
+    TriggerServerEvent('sd_levels:server:syncData')
+    Wait(100)
+    ShowLoadingState(false)
     ToggleLevelsUI(true)
 end, false)
 
 AddEventHandler('onResourceStart', function(resourceName)
     if GetCurrentResourceName() == resourceName then
-        TriggerServerEvent('sd-levels:server:syncData')
+        TriggerServerEvent('sd_levels:server:syncData')
     end
 end)
 
 RegisterNetEvent('QBCore:Client:OnPlayerLoaded', function()
     Wait(500)
-    TriggerServerEvent('sd-levels:server:syncData')
+    TriggerServerEvent('sd_levels:server:syncData')
 end)
 
 RegisterNetEvent('esx:playerLoaded', function()
     Wait(500)
-    TriggerServerEvent('sd-levels:server:syncData')
+    TriggerServerEvent('sd_levels:server:syncData')
 end)
 
-RegisterNetEvent('sd-levels:radialOpen', function()
-    TriggerServerEvent('sd-levels:server:syncData')
+RegisterNetEvent('sd_levels:radialOpen', function()
+    ShowLoadingState(true)
+    TriggerServerEvent('sd_levels:server:syncData')
+    Wait(100)
+    ShowLoadingState(false)
     ToggleLevelsUI(true)
 end)
