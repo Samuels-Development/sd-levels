@@ -1,4 +1,4 @@
-# sd-skills
+# sd-levels
 
 `sd-levels` is a comprehensive and flexible skills script for FiveM, allowing you to add, manage, and track player skills, levels, and progress within your server.
 
@@ -112,4 +112,5 @@ exports['sd-levels']:SetPlayerXP(source, 'FISHING', 5000)
 local levelData = exports['sd-levels']:GetPlayerLevelAndProgress(playerId, 'CRAFTING')
 print('Level:', levelData.level)
 print('Progress:', levelData.progress .. '%')
+
 
