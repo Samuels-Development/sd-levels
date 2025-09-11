@@ -1,64 +1,64 @@
--- Flag to track whether the skills UI is visible
-local skillsVisible = false
+-- Flag to track whether the levels UI is visible
+local levelsVisible = false
 
--- Table to store the player's skills data
-local skills = {}
+-- Table to store the player's levels data
+local levels = {}
 
--- Function to update the skills data in the UI.
----@param skillsData A table containing the skills data to display.
-local UpdateSkillsUI = function(skillsData)
+-- Function to update the levels data in the UI.
+---@param levelsData A table containing the levels data to display.
+local UpdateLevelsUI = function(levelsData)
     SendNUIMessage({
-        action = "updateSkills",
-        skills = skillsData
+        action = "updateLevels",
+        levels = levelsData
     })
 end
 
--- Function to toggle the visibility of the skills UI.
+-- Function to toggle the visibility of the levels UI.
 ---@param show A boolean indicating whether to show or hide the UI.
-local ToggleSkillsUI = function(show)
-    skillsVisible = show
+local ToggleLevelsUI = function(show)
+    levelsVisible = show
     SendNUIMessage({
         action = "toggleUI",
-        show = skillsVisible
+        show = levelsVisible
     })
-    SetNuiFocus(skillsVisible, skillsVisible)
+    SetNuiFocus(levelsVisible, levelsVisible)
 end
 
 -- Event handler for closing the UI
 RegisterNUICallback('closeUI', function(data, cb)
-    ToggleSkillsUI(false)
+    ToggleLevelsUI(false)
     cb('ok')
 end)
 
--- Event handler for receiving skills data from the server
-RegisterNetEvent('sd_skills:client:updateSkills', function(serverSkills)
-    if serverSkills then
-        skills = serverSkills
-        UpdateSkillsUI(skills)
+-- Event handler for receiving levels data from the server
+RegisterNetEvent('sd-levels:client:updateLevels', function(serverLevels)
+    if serverLevels then
+        levels = serverLevels
+        UpdateLevelsUI(levels)
     end
 end)
 
-RegisterCommand("skills", function()
-    ToggleSkillsUI(true)
+RegisterCommand("levels", function()
+    ToggleLevelsUI(true)
 end, false)
 
 AddEventHandler('onResourceStart', function(resourceName)
     if GetCurrentResourceName() == resourceName then
-        TriggerServerEvent('sd_skills:server:syncData')
+        TriggerServerEvent('sd-levels:server:syncData')
     end
 end)
 
 RegisterNetEvent('QBCore:Client:OnPlayerLoaded', function()
     Wait(500)
-    TriggerServerEvent('sd_skills:server:syncData')
+    TriggerServerEvent('sd-levels:server:syncData')
 end)
 
 RegisterNetEvent('esx:playerLoaded', function()
     Wait(500)
-    TriggerServerEvent('sd_skills:server:syncData')
+    TriggerServerEvent('sd-levels:server:syncData')
 end)
 
-RegisterNetEvent('sd_skills:radialOpen', function()
-TriggerServerEvent('sd_skills:server:syncData')
-ToggleSkillsUI(true)
+RegisterNetEvent('sd-levels:radialOpen', function()
+    TriggerServerEvent('sd-levels:server:syncData')
+    ToggleLevelsUI(true)
 end)

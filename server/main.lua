@@ -1,8 +1,8 @@
 -- Table to store player XP data
 local playerXP = {}
 
--- Table to store skills configuration
-local skillsConfig = require('skills')
+-- Table to store level configuration
+local levelConfig = require('levels')
 
 CreateThread(function()
     -- Create the players_xp table if it doesn't exist
@@ -17,22 +17,22 @@ CreateThread(function()
     
     -- Execute the query
     MySQL.Async.execute(createTableQuery, {}, function(rowsChanged)
-        print("^2[SKILLS]^7 Database table 'players_xp' checked/created successfully")
+        print("^2[LEVELS]^7 Database table 'players_xp' checked/created successfully")
     end)
 end)
 
--- Retrieves the player's current XP in a skill.
+-- Retrieves the player's current XP in a level.
 ---@param playerId The player's server ID.
----@param skillName The name of the skill.
----@return The player's current XP in the skill.
-local GetPlayerXP = function(playerId, skillName)
-    return playerXP[playerId] and playerXP[playerId][skillName] or 0
+---@param levelName The name of the level.
+---@return The player's current XP in the level.
+local GetPlayerXP = function(playerId, levelName)
+    return playerXP[playerId] and playerXP[playerId][levelName] or 0
 end
 
 exports("GetPlayerXP", GetPlayerXP)
 
--- Calculates the player's progress in a skill level
----@param xp number The player's total XP in the skill.
+-- Calculates the player's progress in a level
+---@param xp number The player's total XP in the level.
 ---@param totalXP number The cumulative total XP required for all levels up to the current level.
 ---@param xpRequired number The amount of XP required for the current level.
 ---@return number The player's progress towards the next level as a percentage.
@@ -41,20 +41,20 @@ local CalculateProgress = function(xp, totalXP, xpRequired)
     return (xpIntoLevel / xpRequired) * 100
 end
 
--- Determines the player's level and progress in a skill based on their XP.
+-- Determines the player's level and progress in a level based on their XP.
 ---@param playerId The player's server ID.
----@param skillName The name of the skill.
+---@param levelName The name of the level.
 ---@return A table containing the level and progress percentage.
-local GetPlayerLevelAndProgress = function(playerId, skillName)
-    local skill = skillsConfig[skillName]
-    if not skill or not skill.xpPerLevel then
+local GetPlayerLevelAndProgress = function(playerId, levelName)
+    local level = levelConfig[levelName]
+    if not level or not level.xpPerLevel then
         return { level = 1, progress = 0 }
     end
 
-    local xp = GetPlayerXP(playerId, skillName)
+    local xp = GetPlayerXP(playerId, levelName)
     local totalXP = 0
 
-    for lvl, xpRequired in ipairs(skill.xpPerLevel) do
+    for lvl, xpRequired in ipairs(level.xpPerLevel) do
         totalXP = totalXP + xpRequired
         if xp < totalXP then
             local progress = CalculateProgress(xp, totalXP, xpRequired)
@@ -62,31 +62,31 @@ local GetPlayerLevelAndProgress = function(playerId, skillName)
         end
     end
 
-    return { level = #skill.xpPerLevel, progress = 100 }
+    return { level = #level.xpPerLevel, progress = 100 }
 end
 
 exports("GetPlayerLevelAndProgress", GetPlayerLevelAndProgress)
 
--- Sends skills data to the client
+-- Sends levels data to the client
 ---@param playerId The player's server ID.
-local SendSkillsDataToClient = function(playerId)
-    local skillsData = {}
+local SendLevelsDataToClient = function(playerId)
+    local levelsData = {}
     
-    for skillName, skillConfig in pairs(skillsConfig) do
-        local xpAmount = GetPlayerXP(playerId, skillName)
-        local levelData = GetPlayerLevelAndProgress(playerId, skillName)
+    for levelName, levelConfig in pairs(levelConfig) do
+        local xpAmount = GetPlayerXP(playerId, levelName)
+        local levelData = GetPlayerLevelAndProgress(playerId, levelName)
         
-        skillsData[skillName] = {
-            name = skillName,
+        levelsData[levelName] = {
+            name = levelName,
             xp = xpAmount,
             level = levelData.level,
             progress = levelData.progress,
-            description = skillConfig.description or nil,
-            maxLevel = skillConfig.xpPerLevel and #skillConfig.xpPerLevel + 1 or 10,
+            description = levelConfig.description or nil,
+            maxLevel = levelConfig.xpPerLevel and #levelConfig.xpPerLevel + 1 or 10,
         }
     end
     
-    TriggerClientEvent('sd_skills:client:updateSkills', playerId, skillsData)
+    TriggerClientEvent('sd-levels:client:updateLevels', playerId, levelsData)
 end
 
 -- Saves the player's XP data to the database.
@@ -128,75 +128,75 @@ end
 ---@param playerId The player's server ID.
 local InitializePlayerXP = function(playerId)
     if playerXP[playerId] then
-        SendSkillsDataToClient(playerId)
+        SendLevelsDataToClient(playerId)
     else
         LoadPlayerXPFromDatabase(playerId, function()
-            SendSkillsDataToClient(playerId)
+            SendLevelsDataToClient(playerId)
         end)
     end
 end
 
--- Sets the player's XP in a skill.
+-- Sets the player's XP in a level.
 ---@param playerId The player's server ID.
----@param skillName The name of the skill.
+---@param levelName The name of the level.
 ---@param xpAmount The new XP amount to set.
-local SetPlayerXP = function(playerId, skillName, xpAmount)
+local SetPlayerXP = function(playerId, levelName, xpAmount)
     InitializePlayerXP(playerId)
-    playerXP[playerId][skillName] = xpAmount
+    playerXP[playerId][levelName] = xpAmount
     SavePlayerXPToDatabase(playerId)
-    SendSkillsDataToClient(playerId)
+    SendLevelsDataToClient(playerId)
 end
 
 exports("SetPlayerXP", SetPlayerXP)
 
--- Modifies a player's XP in a specific skill by a given amount (positive or negative).
+-- Modifies a player's XP in a specific level by a given amount (positive or negative).
 ---@param playerId The player's server ID.
----@param skillName The name of the skill.
+---@param levelName The name of the level.
 ---@param amount The amount of XP to adjust (can be positive or negative).
-local ModifyPlayerXP = function(playerId, skillName, amount)
+local ModifyPlayerXP = function(playerId, levelName, amount)
     if amount == 0 then return end
 
-    local skill = skillsConfig[skillName]
-    if not skill or not skill.xpPerLevel then return end
+    local level = levelConfig[levelName]
+    if not level or not level.xpPerLevel then return end
 
-    local currentXP = GetPlayerXP(playerId, skillName) or 0
+    local currentXP = GetPlayerXP(playerId, levelName) or 0
 
-    if not skill.maxTotalXP then
+    if not level.maxTotalXP then
         local totalXP = 0
-        for _, xpRequired in ipairs(skill.xpPerLevel) do
+        for _, xpRequired in ipairs(level.xpPerLevel) do
             totalXP = totalXP + xpRequired
         end
-        skill.maxTotalXP = totalXP
+        level.maxTotalXP = totalXP
     end
 
     local newXP = currentXP + amount
-    newXP = math.max(0, math.min(newXP, skill.maxTotalXP))
+    newXP = math.max(0, math.min(newXP, level.maxTotalXP))
 
-    SetPlayerXP(playerId, skillName, newXP)
+    SetPlayerXP(playerId, levelName, newXP)
 end
 
--- Increases a player's XP in a skill by a given amount.
+-- Increases a player's XP in a level by a given amount.
 ---@param playerId The player's server ID.
----@param skillName The name of the skill.
+---@param levelName The name of the level.
 ---@param amount The amount of XP to add.
-local IncreasePlayerXP = function(playerId, skillName, amount)
-    ModifyPlayerXP(playerId, skillName, amount)
+local IncreasePlayerXP = function(playerId, levelName, amount)
+    ModifyPlayerXP(playerId, levelName, amount)
 end
 
 exports("IncreasePlayerXP", IncreasePlayerXP)
 
--- Decreases a player's XP in a skill by a given amount.
+-- Decreases a player's XP in a level by a given amount.
 ---@param playerId The player's server ID.
----@param skillName The name of the skill.
+---@param levelName The name of the level.
 ---@param amount The amount of XP to remove.
-local DecreasePlayerXP = function(playerId, skillName, amount)
-    ModifyPlayerXP(playerId, skillName, -amount)
+local DecreasePlayerXP = function(playerId, levelName, amount)
+    ModifyPlayerXP(playerId, levelName, -amount)
 end
 
 exports("DecreasePlayerXP", DecreasePlayerXP)
 
--- Event handler for initial skills data request
-RegisterNetEvent('sd_skills:server:syncData', function()
+-- Event handler for initial levels data request
+RegisterNetEvent('sd-levels:server:syncData', function()
     local playerId = source
 
     if playerXP[playerId] then
@@ -212,4 +212,4 @@ AddEventHandler('playerDropped', function()
     playerXP[playerId] = nil
 end)
 
-SD.CheckVersion('Samuels-Development/sd_skills') -- Check version of specified resource
+SD.CheckVersion('Samuels-Development/sd-levels') -- Check version of specified resource

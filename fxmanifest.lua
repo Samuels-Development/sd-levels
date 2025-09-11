@@ -15,7 +15,7 @@ shared_scripts { '@sd_lib/init.lua', '@ox_lib/init.lua' }
 ui_page 'html/ui.html'
 
 files {
-    'skills.lua',
+    'levels.lua',
     'html/ui.html',
     'html/style.css',
     'html/app.js',
