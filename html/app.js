@@ -1,36 +1,36 @@
-let skillsData = [];
+let levelsData = [];
 
-function updateSkills(skills) {
-    skillsData = Object.values(skills);
-    renderSkills();
+function updateLevels(levels) {
+    levelsData = Object.values(levels);
+    renderLevels();
 }
 
-function renderSkills() {
-    const skillsGrid = document.getElementById('skills-grid');
-    skillsGrid.innerHTML = '';
+function renderLevels() {
+    const levelsGrid = document.getElementById('levels-grid');
+    levelsGrid.innerHTML = '';
 
-    skillsData.forEach(skill => {
-        const skillItem = document.createElement('div');
-        skillItem.className = 'skill-item';
+    levelsData.forEach(level => {
+        const levelItem = document.createElement('div');
+        levelItem.className = 'level-item';
         
-        const progressPercent = skill.progress || (skill.xp % 100);
+        const progressPercent = level.progress || (level.xp % 100);
         
-        skillItem.innerHTML = `
-            <div class="skill-header">
-                <span class="skill-name">${skill.name}</span>
-                <div class="skill-info">
-                    <span class="skill-xp">XP: ${skill.xp}</span>
-                    <span class="skill-level">Level ${skill.level}</span>
+        levelItem.innerHTML = `
+            <div class="level-header">
+                <span class="level-name">${level.name}</span>
+                <div class="level-info">
+                    <span class="level-xp">XP: ${level.xp}</span>
+                    <span class="level-value">Level ${level.level}</span>
                 </div>
             </div>
-            <div class="skill-description">${skill.description || 'No description available'}</div>
-            <div class="skill-progress">
-                <div class="skill-progress-bar" style="width: ${progressPercent}%">
+            <div class="level-description">${level.description || 'No description available'}</div>
+            <div class="level-progress">
+                <div class="level-progress-bar" style="width: ${progressPercent}%">
                     <span class="progress-text">${Math.round(progressPercent)}%</span>
                 </div>
             </div>
         `;
-        skillsGrid.appendChild(skillItem);
+        levelsGrid.appendChild(levelItem);
     });
 }
 
@@ -56,13 +56,13 @@ function toggleUI(show) {
 
 function closeUI() {
     toggleUI(false);
-    fetch('https://immense-skills/closeUI', {method: 'POST'});
+    fetch('https://sd-levels/closeUI', {method: 'POST'});
 }
 
 // Event Listeners
 window.addEventListener('message', (event) => {
-    if (event.data.action === 'updateSkills') {
-        updateSkills(event.data.skills);
+    if (event.data.action === 'updateLevels') {
+        updateLevels(event.data.levels);
     } else if (event.data.action === 'toggleUI') {
         toggleUI(event.data.show);
     }
@@ -77,5 +77,5 @@ document.addEventListener('keydown', (event) => {
     }
 });
 
-// Initialize with empty skills if needed
-renderSkills();
+// Initialize with empty levels if needed
+renderLevels();

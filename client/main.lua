@@ -18,7 +18,7 @@ end
 local ToggleLevelsUI = function(show)
     levelsVisible = show
     if show then
-        TriggerServerEvent('sd_levels:server:syncData')
+        TriggerServerEvent('sd-levels:server:syncData')
         SetNuiFocus(true, true)
     else
         SetNuiFocus(false, false)
@@ -49,7 +49,7 @@ RegisterNUICallback('closeUI', function(data, cb)
 end)
 
 -- Event handler for receiving levels data from the server
-RegisterNetEvent('sd_levels:client:updateLevels', function(serverLevels)
+RegisterNetEvent('sd-levels:client:updateLevels', function(serverLevels)
     if serverLevels then
         levels = serverLevels
         UpdateLevelsUI(levels)
@@ -59,7 +59,7 @@ end)
 -- Command to open the levels UI
 RegisterCommand("levels", function()
     ShowLoadingState(true)
-    TriggerServerEvent('sd_levels:server:syncData')
+    TriggerServerEvent('sd-levels:server:syncData')
     Wait(100)
     ShowLoadingState(false)
     ToggleLevelsUI(true)
@@ -67,23 +67,23 @@ end, false)
 
 AddEventHandler('onResourceStart', function(resourceName)
     if GetCurrentResourceName() == resourceName then
-        TriggerServerEvent('sd_levels:server:syncData')
+        TriggerServerEvent('sd-levels:server:syncData')
     end
 end)
 
 RegisterNetEvent('QBCore:Client:OnPlayerLoaded', function()
     Wait(500)
-    TriggerServerEvent('sd_levels:server:syncData')
+    TriggerServerEvent('sd-levels:server:syncData')
 end)
 
 RegisterNetEvent('esx:playerLoaded', function()
     Wait(500)
-    TriggerServerEvent('sd_levels:server:syncData')
+    TriggerServerEvent('sd-levels:server:syncData')
 end)
 
-RegisterNetEvent('sd_levels:radialOpen', function()
+RegisterNetEvent('sd-levels:radialOpen', function()
     ShowLoadingState(true)
-    TriggerServerEvent('sd_levels:server:syncData')
+    TriggerServerEvent('sd-levels:server:syncData')
     Wait(100)
     ShowLoadingState(false)
     ToggleLevelsUI(true)

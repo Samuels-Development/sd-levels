@@ -8,7 +8,7 @@
 
 :root {
     --header-font: 'Roboto', sans-serif;
-    --skill-font: 'Roboto', sans-serif;
+    --level-font: 'Roboto', sans-serif;
     --primary-color: #4a90e2;
     --secondary-color: #6b7280;
     --accent-color: #60a5fa;
@@ -73,7 +73,7 @@ body.active {
         0 0 1px rgba(74, 144, 226, 0.1);
 }
 
-#skills-container {
+#levels-container {
     width: 100%;
     height: 100%;
     padding: 20px;
@@ -133,7 +133,7 @@ h2 {
     margin: 0;
 }
 
-#skills-grid {
+#levels-grid {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
     gap: 15px;
@@ -144,25 +144,25 @@ h2 {
     grid-auto-rows: minmax(110px, 110px);
 }
 
-#skills-grid::-webkit-scrollbar {
+#levels-grid::-webkit-scrollbar {
     width: 6px;
 }
 
-#skills-grid::-webkit-scrollbar-track {
+#levels-grid::-webkit-scrollbar-track {
     background: rgba(107, 114, 128, 0.1);
     border-radius: 10px;
 }
 
-#skills-grid::-webkit-scrollbar-thumb {
+#levels-grid::-webkit-scrollbar-thumb {
     background: linear-gradient(135deg, rgba(74, 144, 226, 0.5), rgba(107, 114, 128, 0.5));
     border-radius: 10px;
 }
 
-#skills-grid::-webkit-scrollbar-thumb:hover {
+#levels-grid::-webkit-scrollbar-thumb:hover {
     background: linear-gradient(135deg, rgba(74, 144, 226, 0.7), rgba(107, 114, 128, 0.7));
 }
 
-.skill-description {
+.level-description {
     font-size: 11.5px;
     color: rgba(156, 163, 175, 0.8);
     margin-bottom: 6px;
@@ -175,7 +175,7 @@ h2 {
     flex-grow: 1;
 }
 
-.skill-item {
+.level-item {
     background: linear-gradient(135deg, rgba(74, 144, 226, 0.05), rgba(107, 114, 128, 0.05));
     border: 1px solid var(--border-color);
     border-radius: 12px;
@@ -189,7 +189,7 @@ h2 {
     justify-content: space-between;
 }
 
-.skill-item::before {
+.level-item::before {
     content: '';
     position: absolute;
     top: -50%;
@@ -202,12 +202,12 @@ h2 {
     opacity: 0;
 }
 
-.skill-item:hover::before {
+.level-item:hover::before {
     transform: rotate(45deg) translateX(100%) translateY(100%);
     opacity: 1;
 }
 
-.skill-item:hover {
+.level-item:hover {
     box-shadow: 0 0 30px rgba(74, 144, 226, 0.3), 
                 0 0 60px rgba(74, 144, 226, 0.15),
                 inset 0 0 20px rgba(74, 144, 226, 0.08);
@@ -215,7 +215,7 @@ h2 {
     background: linear-gradient(135deg, rgba(74, 144, 226, 0.1), rgba(107, 114, 128, 0.1));
 }
 
-.skill-header {
+.level-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -223,8 +223,8 @@ h2 {
     gap: 8px;
 }
 
-.skill-name {
-    font-family: var(--skill-font);
+.level-name {
+    font-family: var(--level-font);
     font-size: 13px;
     font-weight: 600;
     color: var(--accent-color);
@@ -236,13 +236,13 @@ h2 {
     max-width: 130px;
 }
 
-.skill-info {
+.level-info {
     display: flex;
     align-items: center;
     gap: 8px;
 }
 
-.skill-xp {
+.level-xp {
     background: rgba(74, 144, 226, 0.15);
     padding: 3px 8px;
     border-radius: 12px;
@@ -251,7 +251,7 @@ h2 {
     border: 1px solid rgba(74, 144, 226, 0.25);
 }
 
-.skill-level {
+.level-value {
     background: linear-gradient(135deg, #4a90e2, #60a5fa);
     padding: 3px 8px;
     border-radius: 12px;
@@ -260,7 +260,7 @@ h2 {
     font-weight: 600;
 }
 
-.skill-progress {
+.level-progress {
     background: rgba(0, 0, 0, 0.4);
     border-radius: 10px;
     height: 24px;
@@ -269,7 +269,7 @@ h2 {
     overflow: hidden;
 }
 
-.skill-progress-bar {
+.level-progress-bar {
     height: 100%;
     background: linear-gradient(90deg, #4a90e2, #60a5fa, #93c5fd);
     border-radius: 8px;
@@ -303,7 +303,7 @@ h2 {
     }
 }
 
-.skill-item.refreshing {
+.level-item.refreshing {
     animation: pulse 0.5s ease;
 }
 
@@ -318,7 +318,7 @@ h2 {
         height: 700px;
     }
     
-    #skills-grid {
+    #levels-grid {
         grid-template-columns: repeat(4, 1fr);
         grid-auto-rows: minmax(105px, 105px);
     }
@@ -330,7 +330,7 @@ h2 {
         height: 650px;
     }
     
-    #skills-grid {
+    #levels-grid {
         grid-template-columns: repeat(3, 1fr);
         grid-auto-rows: minmax(105px, 105px);
     }
@@ -342,7 +342,7 @@ h2 {
         height: 600px;
     }
     
-    #skills-grid {
+    #levels-grid {
         grid-template-columns: repeat(3, 1fr);
     }
 }
@@ -354,7 +354,7 @@ h2 {
         padding: 6px;
     }
     
-    #skills-grid {
+    #levels-grid {
         grid-template-columns: repeat(3, 1fr);
     }
     
@@ -362,13 +362,13 @@ h2 {
         font-size: 28px;
     }
     
-    #skills-container {
+    #levels-container {
         padding: 20px;
     }
 }
 
 @media (max-width: 1024px) {
-    #skills-grid {
+    #levels-grid {
         grid-template-columns: repeat(2, 1fr);
     }
 }
